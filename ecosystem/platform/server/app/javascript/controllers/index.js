@@ -7,6 +7,9 @@ import { application } from "./application"
 import DialogController from "./dialog_controller.ts"
 application.register("dialog", DialogController)
 
+import HeaderController from "./header_controller.ts"
+application.register("header", HeaderController)
+
 import RecaptchaController from "./recaptcha_controller.ts"
 application.register("recaptcha", RecaptchaController)
 
