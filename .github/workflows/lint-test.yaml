@@ -81,6 +81,24 @@ jobs:
         env:
           INDEXER_DATABASE_URL: postgresql://postgres@localhost/postgres
 
+      - name: Upload test results to BuildPulse for flaky test detection
+        if: "!cancelled()" # Run this step even when the tests fail. Skip if the workflow is cancelled.
+        uses: Workshop64/buildpulse-action@main
+        with:
+          account: 99841612
+          repository: 462597790
+          path: target/nextest/ci/junit.xml
+          key: ${{ secrets.BUILDPULSE_ACCESS_KEY_ID }}
+          secret: ${{ secrets.BUILDPULSE_SECRET_ACCESS_KEY }}
+
+      - uses:
+          check-run-reporter/action@v2.11.1
+          # always run, otherwise you'll only see results for passing builds
+        if: always()
+        with:
+          token: ${{ secrets.CHECK_RUN_REPORTER_TOKEN }}
+          report: target/nextest/ci/junit.xml
+
   rust-e2e-test:
     runs-on: high-perf-docker
     steps:
